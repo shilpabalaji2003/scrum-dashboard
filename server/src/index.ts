@@ -24,6 +24,11 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+// Ping endpoint for keeping the service alive
+app.get('/ping', (req, res) => {
+  res.status(200).json({ status: 'pong', timestamp: new Date().toISOString() });
+});
+
 // Routes
 app.use('/api/updates', updateRoutes);
 
