@@ -45,7 +45,7 @@ const UpdateForm = () => {
     if (id) {
       const fetchUpdate = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/updates/${id}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/updates/${id}`);
           const update = response.data;
           setFormData({
             employeeName: update.employeeName || '',
@@ -78,9 +78,9 @@ const UpdateForm = () => {
       };
 
       if (id) {
-        await axios.put(`http://localhost:5000/api/updates/${id}`, data);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/updates/${id}`, data);
       } else {
-        await axios.post('http://localhost:5000/api/updates', data);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/updates`, data);
       }
       navigate('/');
     } catch (error) {

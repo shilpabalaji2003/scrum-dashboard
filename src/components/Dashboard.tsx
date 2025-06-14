@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   const fetchUpdates = async (date?: Date) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/updates', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/updates`, {
         params: date ? { date: format(date, 'yyyy-MM-dd') } : {},
       });
       setUpdates(response.data);
@@ -50,7 +50,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/updates/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/updates/${id}`);
       fetchUpdates(selectedDate || undefined);
     } catch (error) {
       console.error('Error deleting update:', error);
