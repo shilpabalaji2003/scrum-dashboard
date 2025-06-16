@@ -152,9 +152,6 @@ const Dashboard = () => {
               }}
             >
               <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {format(new Date(update.date), 'MMMM d, yyyy')}
-                </Typography>
                 <Typography variant="subtitle1" color="primary" gutterBottom>
                   {update.employeeName}
                 </Typography>
