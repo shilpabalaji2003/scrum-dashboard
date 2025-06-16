@@ -12,10 +12,13 @@ import {
   Select,
   MenuItem,
   CircularProgress,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import axios from 'axios';
 import { format } from 'date-fns';
 
@@ -33,6 +36,7 @@ const UpdateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBulletMode, setIsBulletMode] = useState(false);
   const [formData, setFormData] = useState<UpdateFormData>({
     employeeName: '',
     updates: '',
@@ -91,6 +95,39 @@ const UpdateForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleUpdatesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (isBulletMode) {
+      // Split by newlines and ensure each line starts with a bullet point
+      const lines = value.split('\n');
+      const formattedLines = lines.map(line => {
+        if (line.trim() === '') return '';
+        return line.startsWith('• ') ? line : `• ${line}`;
+      });
+      setFormData({ ...formData, updates: formattedLines.join('\n') });
+    } else {
+      setFormData({ ...formData, updates: value });
+    }
+  };
+
+  const toggleBulletMode = () => {
+    if (!isBulletMode) {
+      // Convert to bullet points
+      const lines = formData.updates.split('\n');
+      const bulletedLines = lines.map(line => {
+        if (line.trim() === '') return '';
+        return line.startsWith('• ') ? line : `• ${line}`;
+      });
+      setFormData({ ...formData, updates: bulletedLines.join('\n') });
+    } else {
+      // Remove bullet points
+      const lines = formData.updates.split('\n');
+      const unbulletedLines = lines.map(line => line.replace(/^•\s*/, ''));
+      setFormData({ ...formData, updates: unbulletedLines.join('\n') });
+    }
+    setIsBulletMode(!isBulletMode);
   };
 
   return (
@@ -165,15 +202,28 @@ const UpdateForm = () => {
               </LocalizationProvider>
             </Box>
             <Box sx={{ width: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
+                  Updates
+                </Typography>
+                <Tooltip title={isBulletMode ? "Disable bullet points" : "Enable bullet points"}>
+                  <IconButton 
+                    onClick={toggleBulletMode}
+                    color={isBulletMode ? "primary" : "default"}
+                    size="small"
+                  >
+                    <FormatListBulletedIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
               <TextField
                 fullWidth
                 multiline
                 rows={4}
-                label="Updates"
                 value={formData.updates}
-                onChange={(e) => setFormData({ ...formData, updates: e.target.value })}
+                onChange={handleUpdatesChange}
                 required
-                placeholder="Enter your daily updates here..."
+                placeholder={isBulletMode ? "Enter updates (each line will be a bullet point)..." : "Enter your daily updates here..."}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     backgroundColor: 'transparent',
