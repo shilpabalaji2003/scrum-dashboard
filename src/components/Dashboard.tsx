@@ -8,6 +8,9 @@ import {
   CardActions,
   IconButton,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -55,6 +58,42 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error deleting update:', error);
     }
+  };
+
+  const formatUpdates = (updates: string) => {
+    // Check if the text contains bullet points
+    if (updates.includes('•')) {
+      // Split by bullet points and filter out empty lines
+      const bulletPoints = updates
+        .split('•')
+        .map(point => point.trim())
+        .filter(point => point.length > 0);
+      
+      return (
+        <List dense disablePadding>
+          {bulletPoints.map((point, index) => (
+            <ListItem key={index} sx={{ py: 0.5 }}>
+              <ListItemText 
+                primary={point}
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    fontSize: '1rem',
+                    lineHeight: 1.5,
+                  }
+                }}
+              />
+            </ListItem>
+          ))}
+        </List>
+      );
+    }
+    
+    // If no bullet points, return as regular text
+    return (
+      <Typography variant="body1" paragraph>
+        {updates}
+      </Typography>
+    );
   };
 
   return (
@@ -118,9 +157,7 @@ const Dashboard = () => {
                 <Typography variant="subtitle1" color="primary" gutterBottom>
                   {update.employeeName}
                 </Typography>
-                <Typography variant="body1" paragraph>
-                  {update.updates}
-                </Typography>
+                {formatUpdates(update.updates)}
                 
                 {(update.githubIssueLink || update.issueDescription || update.buildNumber || update.issueStatus !== 'N/A') && (
                   <>
