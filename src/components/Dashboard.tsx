@@ -11,6 +11,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Link,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -168,7 +169,21 @@ const Dashboard = () => {
                     
                     {update.githubIssueLink && (
                       <Typography variant="body2" color="text.secondary" paragraph>
-                        GitHub Issue: {update.githubIssueLink}
+                        GitHub Issue:{' '}
+                        <Link 
+                          href={update.githubIssueLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          color="primary"
+                          sx={{ 
+                            textDecoration: 'none',
+                            '&:hover': {
+                              textDecoration: 'underline'
+                            }
+                          }}
+                        >
+                          {update.githubIssueLink}
+                        </Link>
                       </Typography>
                     )}
                     
