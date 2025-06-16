@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -31,6 +32,7 @@ interface UpdateFormData {
 const UpdateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<UpdateFormData>({
     employeeName: '',
     updates: '',
@@ -66,6 +68,7 @@ const UpdateForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const data = {
         employeeName: formData.employeeName,
@@ -85,6 +88,8 @@ const UpdateForm = () => {
       navigate('/');
     } catch (error) {
       console.error('Error saving update:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -251,6 +256,7 @@ const UpdateForm = () => {
               <Button 
                 variant="outlined" 
                 onClick={() => navigate('/')}
+                disabled={loading}
                 sx={{ minWidth: 100 }}
               >
                 Cancel
@@ -259,9 +265,11 @@ const UpdateForm = () => {
                 type="submit" 
                 variant="contained" 
                 color="primary"
+                disabled={loading}
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
                 sx={{ minWidth: 100 }}
               >
-                {id ? 'Update' : 'Submit'}
+                {loading ? 'Saving...' : (id ? 'Update' : 'Submit')}
               </Button>
             </Box>
           </Box>
