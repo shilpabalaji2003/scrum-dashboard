@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -31,6 +32,7 @@ interface UpdateFormData {
 const UpdateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<UpdateFormData>({
     employeeName: '',
     updates: '',
@@ -66,6 +68,7 @@ const UpdateForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const data = {
         employeeName: formData.employeeName,
@@ -85,6 +88,8 @@ const UpdateForm = () => {
       navigate('/');
     } catch (error) {
       console.error('Error saving update:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -248,20 +253,20 @@ const UpdateForm = () => {
               width: '100%',
               mt: 2
             }}>
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 onClick={() => navigate('/')}
-                sx={{ minWidth: 100 }}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                color="primary"
-                sx={{ minWidth: 100 }}
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
               >
-                {id ? 'Update' : 'Submit'}
+                {isSubmitting ? 'Submitting...' : (id ? 'Update' : 'Submit')}
               </Button>
             </Box>
           </Box>
