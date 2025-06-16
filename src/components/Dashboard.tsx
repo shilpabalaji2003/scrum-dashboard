@@ -118,8 +118,21 @@ const Dashboard = () => {
                 <Typography variant="subtitle1" color="primary" gutterBottom>
                   {update.employeeName}
                 </Typography>
-                <Typography variant="body1" paragraph>
-                  {update.updates}
+                <Typography variant="body1" sx={{ 
+                  whiteSpace: 'pre-wrap',
+                  '& ul': {
+                    margin: 0,
+                    paddingLeft: '20px',
+                  },
+                  '& li': {
+                    marginBottom: '8px',
+                  }
+                }}>
+                  <ul>
+                    {update.updates.split('\n').map((line, index) => (
+                      <li key={index}>{line}</li>
+                    ))}
+                  </ul>
                 </Typography>
                 
                 {(update.githubIssueLink || update.issueDescription || update.buildNumber || update.issueStatus !== 'N/A') && (
